@@ -12,8 +12,6 @@ git push heroku master  --> upload and deploy app
 heroku open             --> open app in browswer
 ```
 
-# VER
-https://devcenter.heroku.com/articles/deploying-nodejs
-
-En este ejemplo me base en esto:
-https://devcenter.heroku.com/articles/node-websockets
+## See 
+- [Heroku docs](https://devcenter.heroku.com/articles/deploying-nodejs)
+- [SocketIO Example](https://devcenter.heroku.com/articles/node-websockets)
