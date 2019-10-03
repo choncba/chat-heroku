@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Chat con Socket IO y NodeJS</title>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            var socket = io();
+            var nick = "";
+
+            function displayIn(){
+                document.getElementById('chat').style.display = 'none';
+            }
+
+            function showChat(){
+                document.getElementById('ingreso').style.display = 'none';
+                document.getElementById('chat').style.display = 'block';
+                nick = document.getElementById('nickname').value;
+                if(nick == "") nick = "Anonimo";
+            }
+
+            socket.on('time', function(timeString) {
+                var el = document.getElementById('server-time');
+                el.innerHTML = 'Server time: ' + timeString;
+            });
+
+            socket.on('messages', function(data){
+                console.log(data);
+                render(data);
+                scroll();   // Realiza el scroll automático de los mensajes
+            });
+
+            function render(data){
+                var html = data.map(function(message, index){
+                    return(`
+                    <div class="message">
+                        <strong>${message.nickname}</strong> dice:
+                        <p>${message.text}</p>
+                    </div>
+                    `);
+                }).join(' ');
+
+                document.getElementById('messages').innerHTML = html;
+            }
+
+            function scroll(){
+                var board = document.getElementById('messages');
+                board.scrollTop = board.scrollHeight;
+            }
+
+            function addMessage(e){
+                var message = {
+                    nickname: nick,
+                    text: document.getElementById('text').value
+                };
+
+                document.getElementById('nickname').style.display = 'none';
+                document.getElementById('text').value = "";
+                socket.emit('add-message', message);
+                return false;
+            }
+        </script>
+        <style>
+            body{
+                background: url("https://upload.wikimedia.org/wikipedia/commons/4/4d/Instituto_Atletico_Central_Cordoba.png");
+                background-repeat: no-repeat;
+                background-size: 100px 100px;
+                background-color: black;
+            }
+
+            h1{
+                font-family: Arial, Helvetica, sans-serif;
+                color: white;
+                margin-top: 5%;
+                margin-left: 40%;
+            }
+
+            #ingreso{
+                margin-left: 39%;
+            }
+            #chat{
+                margin-left: 31%;
+            }
+            #chat textarea, input{
+                margin-top: 10px;
+            }
+            
+            @media only screen and (max-width: 600px) {
+                h1{
+                    margin-left: 30%;
+                    margin-top: 5%;
+                }
+                #ingreso, #chat{
+                    margin-left: 4%;
+                    margin-top: 15%
+                }
+                #messages{
+                    margin-top: 0%;
+                    margin-left: 0%;
+                }
+
+                #text{
+                    width: 45%;
+                }
+
+                footer{
+                    display: none;
+                }
+            }
+
+            #messages{
+                width: 95%;
+                max-width: 400px;
+                height: 350px;
+                overflow-y: scroll;
+                border: 1px solid #eee;
+                box-shadow: 0px 0px 20px #ccc inset;
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+                border-radius: 5px;
+            }
+
+            form input{
+                margin-left: 10px;
+            }
+
+            #server-time{
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+                font-size: 10px;
+                color: rgb(255, 255, 255);
+            }
+    
+            .message{
+                margin: 20px;
+                padding: 5px;
+                border-radius: 5px;
+                border: 1px solid #ccc;
+                background: white;
+            }
+
+            #text{
+                padding: 15px;
+                width: 25%;
+            }
+
+            footer {
+                position: absolute;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                background-color: #ca1b1b;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body onload="displayIn();">
+        <h1>Chat Privado</h1>
+        <div id="ingreso">
+            <input id="nickname" type="text" placeholder="Ingresa tu Nombre" onkeypress="">
+            <button onclick="showChat()">Entar</button>
+        </div>
+        <div id="chat">
+        <div id="messages"></div>
+        <form onsubmit="return addMessage(this);">
+            <textarea id="text" placeholder="Mensaje..."></textarea>
+            <input type="submit" value="Enviar">
+        </form>
+        </div>
+        
+    </body>
+    <footer><p id='server-time'></p></footer>
+</html>

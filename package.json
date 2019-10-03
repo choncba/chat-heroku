@@ -1,0 +1,23 @@
+{
+  "name": "chat-heroku",
+  "version": "1.0.0",
+  "description": "Test Chat with heroku",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "nodemon server.js"
+  },
+  "keywords": [
+    "heroku"
+  ],
+  "author": "Luciano Bono",
+  "license": "MIT",
+  "engines": {
+    "node": "10.3.0"
+  },
+  "dependencies": {
+    "express": "4.17.1",
+    "nodemon": "^1.19.3",
+    "socket.io": "2.3.0"
+  }
+}
